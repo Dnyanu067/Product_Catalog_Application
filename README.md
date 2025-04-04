@@ -1,4 +1,4 @@
-# 🛒 Product Catalog Application
+# Product Catalog Application
 
 This is a **Spring Boot REST API** for managing product categories and products. It allows CRUD operations for **Categories** and **Products** with a **one-to-many relationship**. The application supports **server-side pagination**.
 
