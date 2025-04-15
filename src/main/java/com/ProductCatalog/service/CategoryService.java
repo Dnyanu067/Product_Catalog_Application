@@ -34,10 +34,15 @@ public class CategoryService {
         return categoryRepository.save(category);
     }
 
-    public Category updateCategory(Long id, Category category) {
-        category.setId(id);
-        return categoryRepository.save(category);
+    public Category updateCategory(Long id, Category updatecategory){
+        return categoryRepository.findById(id).map(category -> {
+            category.setName(updatecategory.getName());
+            category.setProducts(updatecategory.getProducts());
+            
+            return categoryRepository.save(category);
+        }).orElseThrow(() -> new RuntimeException("Category Not Found"));
     }
+
 
     public void deleteCategory(Long id) {
         categoryRepository.deleteById(id);

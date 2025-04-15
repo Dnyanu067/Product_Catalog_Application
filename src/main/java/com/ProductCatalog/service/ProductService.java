@@ -33,12 +33,22 @@ public class ProductService {
         return productRepository.save(product);
     }
 
-    public Product updateProduct(Long id, Product product) {
-        product.setId(id);
-        return productRepository.save(product);
-    }
+    public Product updateProduct(Long id, Product updateproduct) {
+        return productRepository.findById(id).map(product -> {
+            product.setName(updateproduct.getName());
+            product.setCategory(updateproduct.getCategory());  // Added category update
 
+            return productRepository.save(product);
+        }).orElseThrow(() -> new RuntimeException("Product Not Found with id: " + id));
+    }
+    
+    
+    
+    
     public void deleteProduct(Long id) {
+    	  if (!productRepository.existsById(id)) {
+              throw new RuntimeException("Product Not Found with id: " + id);
+          }
         productRepository.deleteById(id);
     }
 }

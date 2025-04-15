@@ -27,10 +27,10 @@ public class ProductController {
     private ProductService productService;
 
     @GetMapping
-    public Page<Product> getProducts(
+    public ResponseEntity<Page<Product>> getProducts(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size) {
-        return productService.getProducts(PageRequest.of(page, size));
+        return ResponseEntity.ok(productService.getProducts(PageRequest.of(page, size)));
     }
     
 
@@ -49,13 +49,24 @@ public class ProductController {
 
     @PutMapping("/{id}")
     public ResponseEntity<Product> updateProduct(@PathVariable Long id, @RequestBody Product product) {
-        return ResponseEntity.ok(productService.updateProduct(id, product));
+        try {
+			return ResponseEntity.ok(productService.updateProduct(id, product));
+		} catch (Exception e) {
+			  return ResponseEntity.notFound().build();
+		}
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteProduct(@PathVariable Long id) {
-        productService.deleteProduct(id);
-        return ResponseEntity.noContent().build();
+        try {
+        	if(!productService.getProductById(id).isPresent()) {
+        		 return ResponseEntity.notFound().build();
+        	}
+			productService.deleteProduct(id);
+			return ResponseEntity.noContent().build();
+		} catch (Exception e) {
+			 return ResponseEntity.internalServerError().build();
+		}
     }
 }
 
